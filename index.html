@@ -98,27 +98,34 @@
 <!-- Script to load and display markdown files -->
 <!-- Script to load and display markdown files -->
     <script>
+function pathVariants(path) {
+    let combos = [[]];
+    for (const part of path.split('/')) {
+        const forms = [...new Set([part.normalize('NFC'), part.normalize('NFD')])];
+        combos = combos.flatMap(c => forms.map(f => [...c, f]));
+    }
+    return combos.map(c => c.join('/'));
+}
+
 async function loadNote(filePath) {
     const contentDiv = document.getElementById('note-content');
     contentDiv.innerHTML = '<p>Loading note...</p>';
 
-    const base = './ŠKOLA - VŠE/' + filePath;
-    const candidates = [base.normalize('NFC'), base.normalize('NFD')];
+    const variants = pathVariants('ŠKOLA - VŠE/' + filePath);
 
-    for (const path of candidates) {
+    for (const variant of variants) {
         try {
-            const response = await fetch(encodeURI(path));
+            const response = await fetch(encodeURI('./' + variant));
             if (!response.ok) continue;
-            const markdownText = await response.text();
-            contentDiv.innerHTML = marked.parse(markdownText);
+            contentDiv.innerHTML = marked.parse(await response.text());
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
-        } catch (e) { /* try next form */ }
+        } catch (e) { /* try next variant */ }
     }
 
     contentDiv.innerHTML = `
         <h2>⚠️ Note Not Found</h2>
-        <p>Could not load <code>${base}</code> (tried both NFC and NFD forms).</p>
+        <p>Could not load <code>${filePath}</code> (tried ${variants.length} Unicode variants).</p>
     `;
 }
     </script>
