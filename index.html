@@ -3,50 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Class Notes</title>
+    <title>ŠKOLA - VŠE Notes</title>
     <link rel="stylesheet" href="style.css">
+    <!-- This library turns your .md files into nice HTML automatically -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <h2>📚 Class Notes</h2>
+            <h2>📚 ŠKOLA - VŠE</h2>
             <nav>
-                <ul>
-                    <li><a href="index.html">🏠 Home</a></li>
-                    <li><a href="biology.html">🧬 Biology 101</a></li>
-                    <li><a href="history.html">🏛️ History 202</a></li>
-                    <li><a href="math.html">📐 Calculus</a></li>
+                <ul class="tree">
+                    <li>
+                        <details>
+                            <summary>📁 1. semsetr - nic</summary>
+                            <ul>
+                                <li><a href="#" onclick="loadNote('1. semsetr - nic/4IZ110.md')">📄 4IZ110</a></li>
+                                <li><a href="#" onclick="loadNote('1. semsetr - nic/Odborná práce.md')">📄 Odborná práce</a></li>
+                                <li><a href="#" onclick="loadNote('1. semsetr - nic/Právo.md')">📄 Právo</a></li>
+                            </ul>
+                        </details>
+                    </li>
+
+                    <li>
+                        <details open>
+                            <summary>📁 2. semester</summary>
+                            <ul>
+                                <li>
+                                    <details>
+                                        <summary>📁 Mikroekonomie 3MI202</summary>
+                                        <ul>
+                                            <li><a href="#" onclick="loadNote('2. semester/Mikroekonomie 3MI202/Mikroekonomie Cvičení 3MI202.md')">📄 Mikroekonomie Cvičení 3MI202</a></li>
+                                            <li><a href="#" onclick="loadNote('2. semester/Mikroekonomie 3MI202/Mikroekonomie Přednáška 3MI202.md')">📄 Mikroekonomie Přednáška 3MI202</a></li>
+                                            <li><a href="#" onclick="loadNote('2. semester/Mikroekonomie 3MI202/Mikroekonomie otázky.md')">📄 Mikroekonomie otázky</a></li>
+                                        </ul>
+                                    </details>
+                                </li>
+                                <li>
+                                    <details>
+                                        <summary>📁 Programování v Javě</summary>
+                                        <ul>
+                                            <li><a href="#" onclick="loadNote('2. semester/Programování v Javě/Programování v Javě - cvičení 4IT101.md')">📄 Programování v Javě - cvičení 4IT101</a></li>
+                                            <li><a href="#" onclick="loadNote('2. semester/Programování v Javě/Programování v Javě - přednáška 4IT101.md')">📄 Programování v Javě - přednáška 4IT101</a></li>
+                                        </ul>
+                                    </details>
+                                </li>
+                                <li><a href="#" onclick="loadNote('2. semester/Databáze - přednášky.md')">📄 Databáze - přednášky</a></li>
+                                <li><a href="#" onclick="loadNote('2. semester/Databáze modelování - cvičení.md')">📄 Databáze modelování - cvičení</a></li>
+                                <li><a href="#" onclick="loadNote('2. semester/Datový minimum.md')">📄 Datový minimum</a></li>
+                                <li><a href="#" onclick="loadNote('2. semester/UX design.md')">📄 UX design</a></li>
+                                <li><a href="#" onclick="loadNote('2. semester/Základy marketingu pro informatiky.md')">📄 Základy marketingu pro informatiky</a></li>
+                            </ul>
+                        </details>
+                    </li>
+
+                    <li>
+                        <details open>
+                            <summary>📁 3. semestr</summary>
+                            <ul>
+                                <li><a href="#" onclick="loadNote('3. semestr/Angličtina - 2AJ212.md')">📄 Angličtina - 2AJ212</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Kvantitativní mgmt - 4EK212 - cvičení.md')">📄 Kvantitativní mgmt - 4EK212 - cvičení</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Kvantitativní mgmt - 4EK212 - přednáška.md')">📄 Kvantitativní mgmt - 4EK212 - přednáška</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Makroekonomie 3MI204 - přednáška.md')">📄 Makroekonomie 3MI204 - přednáška</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Softwarové inženýrství 4IT115 - cvičení.md')">📄 Softwarové inženýrství 4IT115 - cvičení</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Softwarové inženýrství 4IT115 - přednáška.md')">📄 Softwarové inženýrství 4IT115 - přednáška</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Strategická analýza 3SG201 - cvičení.md')">📄 Strategická analýza 3SG201 - cvičení</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Strategická analýza 3SG201 - přednáška.md')">📄 Strategická analýza 3SG201 - přednáška</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Zpracování informací a znalostí 4IZ210 - cvičení.md')">📄 Zpracování informací a znalostí 4IZ210 - cvičení</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Zpracování informací a znalostí 4IZ210 - přednášky.md')">📄 Zpracování informací a znalostí 4IZ210 - přednášky</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Účetnictví 1FU201 - cvičení.md')">📄 Účetnictví 1FU201 - cvičení</a></li>
+                                <li><a href="#" onclick="loadNote('3. semestr/Účetnictví 1FU201 - přednáška.md')">📄 Účetnictví 1FU201 - přednáška</a></li>
+                            </ul>
+                        </details>
+                    </li>
                 </ul>
             </nav>
         </aside>
 
         <!-- Main Content Area -->
         <main class="content">
-            <header>
-                <h1>Welcome to My Notes</h1>
-                <p class="date">Last updated: October 2026</p>
-            </header>
-            
-            <article>
-                <h2>Introduction</h2>
-                <p>Hi! I'm sharing my class notes from Obsidian here. Use the sidebar to navigate through different subjects.</p>
-                
-                <h3>How these notes are formatted</h3>
-                <p>You can use standard HTML to format your exported Obsidian notes:</p>
-                
-                <ul>
-                    <li><strong>Important concepts</strong> are in bold.</li>
-                    <li><em>Definitions</em> are in italics.</li>
-                </ul>
-
-                <blockquote>
-                    "This is a blockquote, perfect for highlighting important quotes from professors or textbooks."
-                </blockquote>
-
-                <p>If you have any code snippets from computer science classes, they look like this: <code>print("Hello World")</code>.</p>
+            <!-- This is where the markdown will be injected -->
+            <article id="note-content">
+                <h1>Welcome to My VŠE Notes</h1>
+                <p>Select a note from the sidebar on the left to start reading.</p>
+                <p><em>Note: If you are opening this file locally on your computer by double-clicking it, it might not work due to browser security blocking local file fetching. It will work perfectly once hosted on GitHub Pages!</em></p>
             </article>
         </main>
     </div>
+
+    <!-- Script to load and display markdown files -->
+    <script>
+        async function loadNote(filePath) {
+            const contentDiv = document.getElementById('note-content');
+            contentDiv.innerHTML = '<p>Loading note...</p>'; // Loading state
+            
+            try {
+                // Fetch the raw .md file from the same folder structure
+                const response = await fetch(filePath);
+                
+                if (!response.ok) {
+                    throw new Error('Could not find the file.');
+                }
+                
+                const markdownText = await response.text();
+                // Convert markdown to HTML and put it in the page
+                contentDiv.innerHTML = marked.parse(markdownText);
+                
+                // Scroll to top of the page smoothly
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <h2>⚠️ Note Not Found</h2>
+                    <p>Could not load <code>${filePath}</code>.</p>
+                    <p>Make sure this file is uploaded to your GitHub repository in the exact folder path.</p>
+                `;
+            }
+        }
+    </script>
 </body>
 </html>
