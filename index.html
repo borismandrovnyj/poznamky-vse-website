@@ -93,14 +93,18 @@
     </div>
 
     <!-- Script to load and display markdown files -->
+<!-- Script to load and display markdown files -->
     <script>
         async function loadNote(filePath) {
             const contentDiv = document.getElementById('note-content');
             contentDiv.innerHTML = '<p>Loading note...</p>'; // Loading state
             
+            // Add the missing root folder to the path
+            const fullPath = 'ŠKOLA - VŠE/' + filePath;
+            
             try {
-                // Fetch the raw .md file from the same folder structure
-                const response = await fetch(filePath);
+                // Fetch the raw .md file using the corrected path
+                const response = await fetch(fullPath);
                 
                 if (!response.ok) {
                     throw new Error('Could not find the file.');
@@ -116,7 +120,7 @@
             } catch (error) {
                 contentDiv.innerHTML = `
                     <h2>⚠️ Note Not Found</h2>
-                    <p>Could not load <code>${filePath}</code>.</p>
+                    <p>Could not load <code>${fullPath}</code>.</p>
                     <p>Make sure this file is uploaded to your GitHub repository in the exact folder path.</p>
                 `;
             }
