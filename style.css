@@ -1,16 +1,15 @@
-/* Color Variables for easy customization */
+/* Color Variables */
 :root {
-    --sidebar-bg: #1e1e1e; /* Dark sidebar like Obsidian */
+    --sidebar-bg: #1e1e1e;
     --sidebar-text: #cccccc;
     --sidebar-hover: #ffffff;
     --main-bg: #ffffff;
     --text-color: #333333;
     --heading-color: #111111;
-    --accent-color: #7a82ff; /* Nice subtle purple/blue accent */
-    --quote-bg: #f5f5f5;
+    --accent-color: #3b82f6; 
+    --quote-bg: #f8fafc;
 }
 
-/* Base Styles */
 body, html {
     margin: 0;
     padding: 0;
@@ -27,11 +26,15 @@ body, html {
 
 /* Sidebar Styles */
 .sidebar {
-    width: 260px;
+    width: 320px; /* Made slightly wider for long Czech file names */
     background-color: var(--sidebar-bg);
     color: var(--sidebar-text);
-    padding: 30px 20px;
+    padding: 20px;
     box-sizing: border-box;
+    overflow-y: auto; /* Allows scrolling if folder list gets too long */
+    height: 100vh;
+    position: sticky;
+    top: 0;
 }
 
 .sidebar h2 {
@@ -42,89 +45,102 @@ body, html {
     border-bottom: 1px solid #333;
 }
 
-.sidebar ul {
+/* Folder Tree Styles */
+.tree {
     list-style: none;
-    padding: 0;
-    margin: 20px 0;
+    padding-left: 0;
 }
 
-.sidebar li {
-    margin-bottom: 12px;
+.tree ul {
+    list-style: none;
+    padding-left: 20px;
+    margin: 5px 0;
+    border-left: 1px solid #333; /* Vertical lines connecting folders */
 }
 
-.sidebar a {
+.tree li {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+details > summary {
+    cursor: pointer;
+    padding: 4px 0;
+    user-select: none;
+    color: #e2e8f0;
+    transition: color 0.2s;
+}
+
+details > summary:hover {
+    color: var(--sidebar-hover);
+}
+
+/* Hide default arrow for details tag to look cleaner */
+details > summary::marker {
+    display: none;
+    content: "";
+}
+details > summary::-webkit-details-marker {
+    display: none;
+}
+
+.tree a {
     color: var(--sidebar-text);
     text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.2s ease;
     display: block;
+    padding: 4px 0;
+    transition: color 0.2s;
 }
 
-.sidebar a:hover {
+.tree a:hover {
     color: var(--sidebar-hover);
-    transform: translateX(5px);
 }
 
 /* Main Content Styles */
 .content {
     flex: 1;
-    padding: 50px 80px;
+    padding: 40px 80px;
     max-width: 900px;
     margin: 0 auto;
     background-color: var(--main-bg);
     box-shadow: -5px 0 15px rgba(0,0,0,0.03);
+    min-height: 100vh;
 }
 
-header {
-    border-bottom: 2px solid #eee;
-    margin-bottom: 30px;
-    padding-bottom: 10px;
-}
+/* Markdown Generated Content Styling */
+#note-content h1 { font-size: 2.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 0;}
+#note-content h2 { margin-top: 30px; color: var(--heading-color); }
+#note-content h3 { margin-top: 25px; color: var(--heading-color); }
+#note-content img { max-width: 100%; height: auto; border-radius: 6px; margin: 20px 0; }
 
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 5px;
-    color: var(--heading-color);
-}
-
-h2 { margin-top: 40px; color: var(--heading-color); }
-h3 { margin-top: 30px; color: var(--heading-color); }
-
-.date {
-    color: #888;
-    font-size: 0.9rem;
-    margin-top: 0;
-}
-
-/* Formatting for notes */
-blockquote {
+#note-content blockquote {
     background-color: var(--quote-bg);
     border-left: 4px solid var(--accent-color);
     margin: 20px 0;
     padding: 15px 20px;
     font-style: italic;
-    border-radius: 0 5px 5px 0;
+    color: #555;
 }
 
-code {
-    background-color: #f0f0f0;
+#note-content code {
+    background-color: #f1f5f9;
     padding: 3px 6px;
     border-radius: 4px;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 0.9em;
-    color: #d63384;
+    font-family: monospace;
+    color: #db2777;
 }
 
-/* Responsive Design for Mobile/Tablets */
+#note-content pre code {
+    display: block;
+    padding: 15px;
+    background-color: #1e293b;
+    color: #e2e8f0;
+    overflow-x: auto;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-    .sidebar {
-        width: 100%;
-        padding: 20px;
-    }
-    .content {
-        padding: 30px 20px;
-    }
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .content { padding: 30px 20px; }
 }
