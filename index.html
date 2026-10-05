@@ -12,7 +12,7 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <a href="https://borismandrovnyj.github.io/poznamky-vse-website/"><h2>Seznam souborů:</h2></a>
+            <a href="#" onclick="showHome(); return false;"><h2>Seznam souborů:</h2></a>
             <nav>
                 <ul class="tree">
                     <li>
@@ -27,7 +27,7 @@
                     </li>
 
                     <li>
-                        <details open>
+                        <details>
                             <summary>📁 2. semester</summary>
                             <ul>
                                 <li>
@@ -59,7 +59,7 @@
                     </li>
 
                     <li>
-                        <details open>
+                        <details>
                             <summary>📁 3. semestr</summary>
                             <ul>
                                 <li><a href="#" onclick="loadNote('3. semestr/Angličtina - 2AJ212.md')">📄 Angličtina - 2AJ212</a></li>
@@ -86,48 +86,74 @@
             <!-- This is where the markdown will be injected -->
             <article id="note-content">
                 <h1>Poznámky z VŠE FIS</h1>
-                <h3>Instrukce pro používání:</h3>
-                <p>Po levé straně je nabídka poznámek, které jsou seřazeny podlé mého průběhu studia - tudíž Váš semestr nemusí být v souladu s mým.</p>
-                <strong color="red">Neručím za žádné chyby, mezery a další nesprávnosti.</strong>
-                <p><em>Note: If you are opening this file locally on your computer by double-clicking it, it might not work due to browser security blocking local file fetching. It will work perfectly once hosted on GitHub Pages!</em></p>
+                <p class="lead">Moje studijní poznámky z přednášek a cvičení z Fakulty informatiky a statistiky VŠE. Sdílím je veřejně, aby se z nich mohl učit i někdo další.</p>
+
+                <div class="notice">
+                    <strong>Neručím za správnost.</strong>
+                    Poznámky psal student pro sebe, ne vyučující. Mohou obsahovat chyby, mezery a zastaralé informace. Nejde o oficiální studijní materiály VŠE. Před zkouškou si vše ověř ve slidech, skriptech a u vyučujících.
+                </div>
+
+                <h2>Jak to používat</h2>
+                <ul>
+                    <li>V levém menu otevři složku a klikni na předmět, poznámka se načte vpravo.</li>
+                    <li>Semestry odpovídají mému průběhu studia, tvůj může mít jiné předměty.</li>
+                    <li>Kliknutím na nadpis „Seznam souborů" se vrátíš sem.</li>
+                </ul>
+
+                <h2>Co tu najdeš</h2>
+                <dl class="overview">
+                    <dt>1. semestr</dt>
+                    <dd>4IZ110, Odborná práce, Právo</dd>
+                    <dt>2. semestr</dt>
+                    <dd>Mikroekonomie, Programování v Javě, Databáze, Datové minimum, UX design, Základy marketingu</dd>
+                    <dt>3. semestr</dt>
+                    <dd>Angličtina, Kvantitativní management, Makroekonomie, Softwarové inženýrství, Strategická analýza, Zpracování informací a znalostí, Účetnictví</dd>
+                </dl>
+
+                <h2>Našel jsi chybu?</h2>
+                <p>Budu rád, když mi dáš vědět. Chybu můžeš nahlásit přes <a href="https://github.com/borismandrovnyj/poznamky-vse-website/issues" target="_blank" rel="noopener">GitHub Issues</a> nebo navrhnout opravu přímo v repozitáři.</p>
             </article>
         </main>
     </div>
 
     <!-- Script to load and display markdown files -->
-<!-- Script to load and display markdown files -->
-<!-- Script to load and display markdown files -->
     <script>
-function pathVariants(path) {
-    let combos = [[]];
-    for (const part of path.split('/')) {
-        const forms = [...new Set([part.normalize('NFC'), part.normalize('NFD')])];
-        combos = combos.flatMap(c => forms.map(f => [...c, f]));
-    }
-    return combos.map(c => c.join('/'));
-}
+        const contentDiv = document.getElementById('note-content');
+        const homeHTML = contentDiv.innerHTML;
 
-async function loadNote(filePath) {
-    const contentDiv = document.getElementById('note-content');
-    contentDiv.innerHTML = '<p>Loading note...</p>';
-
-    const variants = pathVariants('ŠKOLA - VŠE/' + filePath);
-
-    for (const variant of variants) {
-        try {
-            const response = await fetch(encodeURI('./' + variant));
-            if (!response.ok) continue;
-            contentDiv.innerHTML = marked.parse(await response.text());
+        function showHome() {
+            contentDiv.innerHTML = homeHTML;
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        } catch (e) { /* try next variant */ }
-    }
+        }
 
-    contentDiv.innerHTML = `
-        <h2>⚠️ Note Not Found</h2>
-        <p>Could not load <code>${filePath}</code> (tried ${variants.length} Unicode variants).</p>
-    `;
-}
+        function pathVariants(path) {
+            let combos = [[]];
+            for (const part of path.split('/')) {
+                const forms = [...new Set([part.normalize('NFC'), part.normalize('NFD')])];
+                combos = combos.flatMap(c => forms.map(f => [...c, f]));
+            }
+            return combos.map(c => c.join('/'));
+        }
+
+        async function loadNote(filePath) {
+            contentDiv.innerHTML = '<p>Načítám poznámku…</p>';
+            const variants = pathVariants('ŠKOLA - VŠE/' + filePath);
+
+            for (const variant of variants) {
+                try {
+                    const response = await fetch(encodeURI('./' + variant));
+                    if (!response.ok) continue;
+                    contentDiv.innerHTML = marked.parse(await response.text());
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                } catch (e) { /* try next variant */ }
+            }
+
+            contentDiv.innerHTML = `
+                <h2>⚠️ Poznámka nenalezena</h2>
+                <p>Nepodařilo se načíst <code>${filePath}</code>.</p>
+            `;
+        }
     </script>
 </body>
 </html>
