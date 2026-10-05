@@ -144,3 +144,41 @@ details > summary::-webkit-details-marker {
     .sidebar { width: 100%; height: auto; position: relative; }
     .content { padding: 30px 20px; }
 }
+
+
+/* Folder arrow */
+details > summary { list-style: none; }
+details > summary::before {
+    content: "▸";
+    display: inline-block;
+    width: 1.2em;
+    transition: transform 0.15s;
+}
+details[open] > summary::before { transform: rotate(90deg); }
+
+/* Keyboard focus */
+.tree a:focus-visible, details > summary:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Home page */
+#note-content .lead { font-size: 1.15rem; color: #444; }
+
+#note-content .notice {
+    background: #fff7e6;
+    border-left: 4px solid #f59e0b;
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 24px 0;
+}
+
+#note-content .overview { margin: 0; }
+#note-content .overview dt { font-weight: 600; margin-top: 14px; color: var(--heading-color); }
+#note-content .overview dd { margin: 2px 0 0; color: #555; }
+
+#note-content a { color: var(--accent-color); }
+
+@media (prefers-reduced-motion: reduce) {
+    details > summary::before { transition: none; }
+}
