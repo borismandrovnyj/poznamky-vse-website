@@ -96,34 +96,35 @@
 
     <!-- Script to load and display markdown files -->
 <!-- Script to load and display markdown files -->
+<!-- Script to load and display markdown files -->
     <script>
         async function loadNote(filePath) {
             const contentDiv = document.getElementById('note-content');
             contentDiv.innerHTML = '<p>Loading note...</p>'; // Loading state
             
-            // Add the missing root folder to the path
-            const fullPath = 'ŠKOLA - VŠE/' + filePath;
+            // 1. Add ./ to strictly define a relative path
+            // 2. Use encodeURI to safely format spaces and Czech characters (Š, á, č)
+            const fullPath = encodeURI('./ŠKOLA - VŠE/' + filePath);
             
             try {
-                // Fetch the raw .md file using the corrected path
+                // Fetch the raw .md file using the safe path
                 const response = await fetch(fullPath);
                 
                 if (!response.ok) {
-                    throw new Error('Could not find the file.');
+                    throw new Error(`Server responded with status: ${response.status}`);
                 }
                 
                 const markdownText = await response.text();
-                // Convert markdown to HTML and put it in the page
                 contentDiv.innerHTML = marked.parse(markdownText);
                 
-                // Scroll to top of the page smoothly
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
             } catch (error) {
+                // If it fails, this will now print the exact path it tried to fetch
                 contentDiv.innerHTML = `
                     <h2>⚠️ Note Not Found</h2>
                     <p>Could not load <code>${fullPath}</code>.</p>
-                    <p>Make sure this file is uploaded to your GitHub repository in the exact folder path.</p>
+                    <p>Error details: ${error.message}</p>
                 `;
             }
         }
