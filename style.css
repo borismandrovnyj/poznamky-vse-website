@@ -104,6 +104,7 @@ details > summary::-webkit-details-marker {
     margin: 0 auto;
     background-color: var(--main-bg);
     box-shadow: -5px 0 15px rgba(0,0,0,0.03);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.03);
     min-height: 100vh;
 }
 
@@ -156,7 +157,7 @@ details > summary::-webkit-details-marker {
     box-sizing: border-box;
     padding: 40px 20px;
     font-size: 0.88rem;
-    background-color: #C0C1C4;
+    background-color: #F0F2F5;
 }
 .toc:empty { display: none; }
 .toc h2 { font-size: 0.95rem; margin: 0 0 10px; color: var(--heading-color); }
