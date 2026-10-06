@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="style.css">
     <!-- This library turns your .md files into nice HTML automatically -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -115,12 +118,100 @@
                 <p>Budu rád, když mi dáš vědět. Chybu můžeš nahlásit přes <a href="https://github.com/borismandrovnyj/poznamky-vse-website/issues" target="_blank" rel="noopener">GitHub Issues</a> nebo navrhnout opravu přímo v repozitáři.</p>
             </article>
         </main>
+        <aside class="toc" id="toc"></aside>
     </div>
 
     <!-- Script to load and display markdown files -->
     <script>
         const contentDiv = document.getElementById('note-content');
         const homeHTML = contentDiv.innerHTML;
+
+                // ---- Math: protect formulas from marked, render with KaTeX afterwards ----
+        function extractMath(md) {
+            const store = [];
+            const stash = (tex, display) => { store.push({ tex, display }); return `@@MATH${store.length - 1}@@`; };
+
+            // skip code blocks and inline code
+            const parts = md.split(/(```[\s\S]*?```|`[^`\n]*`)/);
+            const out = parts.map((part, i) => {
+                if (i % 2 === 1) return part;
+                return part
+                    .replace(/\$\$([\s\S]+?)\$\$/g, (m, t) => stash(t, true))
+                    .replace(/\$(?!\s)([^$\n]+?)(?<!\s)\$/g, (m, t) => stash(t, false));
+            });
+            return { md: out.join(''), store };
+        }
+
+        function restoreMath(html, store) {
+            return html.replace(/@@MATH(\d+)@@/g, (m, i) => {
+                const { tex, display } = store[i];
+                return katex.renderToString(tex.replace(/(\d),(\d)/g, '$1{,}$2'), {
+                    displayMode: display,
+                    throwOnError: false
+                });
+            });
+        }
+
+        // ---- Table of contents ----
+        function slugify(t) {
+            return t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'sekce';
+        }
+
+        let tocObserver;
+        function buildToc() {
+            const toc = document.getElementById('toc');
+            toc.innerHTML = '';
+            if (tocObserver) tocObserver.disconnect();
+
+            const headings = [...contentDiv.querySelectorAll('h1, h2, h3, h4')];
+            if (headings.length < 2) return;
+
+            const used = {};
+            const nav = document.createElement('nav');
+            const minLevel = Math.min(...headings.map(h => +h.tagName[1]));
+
+            headings.forEach(h => {
+                let id = slugify(h.textContent);
+                used[id] = (used[id] || 0) + 1;
+                if (used[id] > 1) id += '-' + used[id];
+                h.id = id;
+
+                const a = document.createElement('a');
+                a.textContent = h.textContent;
+                a.href = '#' + id;
+                a.dataset.id = id;
+                a.style.paddingLeft = (+h.tagName[1] - minLevel) * 14 + 'px';
+                nav.appendChild(a);
+            });
+
+            toc.innerHTML = '<h2>Na této stránce</h2>';
+            toc.appendChild(nav);
+
+            // collapsible copy at the top of the note for narrow screens
+            const inline = document.createElement('details');
+            inline.className = 'toc-inline';
+            inline.innerHTML = '<summary>Na této stránce</summary>';
+            inline.appendChild(nav.cloneNode(true));
+            contentDiv.prepend(inline);
+
+            // highlight the section currently being read
+            tocObserver = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting) return;
+                    document.querySelectorAll('.toc a, .toc-inline a').forEach(a =>
+                        a.classList.toggle('active', a.dataset.id === e.target.id));
+                });
+            }, { rootMargin: '0px 0px -75% 0px' });
+            headings.forEach(h => tocObserver.observe(h));
+        }
+
+        document.addEventListener('click', e => {
+            const a = e.target.closest('.toc a, .toc-inline a');
+            if (!a) return;
+            e.preventDefault();
+            document.getElementById(a.dataset.id)?.scrollIntoView({ behavior: 'smooth' });
+        });
 
         function convertObsidian(md) {
             return md.replace(/!\[\[([^\]|]+)(?:\|[^\]]*)?\]\]/g, (m, name) => {
@@ -135,6 +226,7 @@
         function showHome() {
             contentDiv.innerHTML = homeHTML;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('toc').innerHTML = '';
         }
 
         function pathVariants(path) {
@@ -154,7 +246,9 @@
                 try {
                     const response = await fetch(encodeURI('./' + variant));
                     if (!response.ok) continue;
-                    contentDiv.innerHTML = marked.parse(convertObsidian(await response.text()));
+                    const { md, store } = extractMath(convertObsidian(await response.text()));
+                    contentDiv.innerHTML = restoreMath(marked.parse(md), store);
+                    buildToc();
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 } catch (e) { /* try next variant */ }
