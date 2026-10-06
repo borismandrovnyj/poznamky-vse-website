@@ -122,6 +122,16 @@
         const contentDiv = document.getElementById('note-content');
         const homeHTML = contentDiv.innerHTML;
 
+        function convertObsidian(md) {
+            return md.replace(/!\[\[([^\]|]+)(?:\|[^\]]*)?\]\]/g, (m, name) => {
+                name = name.trim();
+                const url = encodeURI('./attachments/' + name);
+                if (/\.(png|jpe?g|gif|webp|svg)$/i.test(name)) return `![${name}](${url})`;
+                if (/\.pdf$/i.test(name)) return `<iframe class="embed" src="${url}"></iframe>\n\n[Open PDF](${url})`;
+                return `[📎 ${name}](${url})`;
+            });
+        }
+
         function showHome() {
             contentDiv.innerHTML = homeHTML;
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -144,7 +154,7 @@
                 try {
                     const response = await fetch(encodeURI('./' + variant));
                     if (!response.ok) continue;
-                    contentDiv.innerHTML = marked.parse(await response.text());
+                    contentDiv.innerHTML = marked.parse(convertObsidian(await response.text()));
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 } catch (e) { /* try next variant */ }
